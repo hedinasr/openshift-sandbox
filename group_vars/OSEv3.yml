@@ -1,0 +1,21 @@
+debug_level: 2
+
+openshift_deployment_type: origin
+openshift_disable_check:
+  - disk_availability
+  - memory_availability
+
+openshift_release: v3.11
+openshift_image_tag: v3.11
+openshift_use_system_containers: False
+openshift_master_cluster_method: native
+openshift_master_cluster_hostname: master.192.168.99.2.nip.io
+openshift_master_cluster_public_hostname: master.192.168.99.2.nip.io
+openshift_master_default_subdomain: app.192.168.99.2.nip.io
+openshift_router_selector: 'node-role.kubernetes.io/infra=true'
+openshift_registry_selector: 'node-role.kubernetes.io/infra=true'
+openshift_enable_service_catalog: False
+template_service_broker_install: False
+openshift_clock_enabled: true
+openshift_metrics_install_metrics: False
+openshift_logging_install_logging: False

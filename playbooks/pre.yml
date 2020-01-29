@@ -1,0 +1,28 @@
+- hosts: all
+  become: True
+  gather_facts: False
+  tasks:
+    - name: install required packages
+      yum:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - PyYAML
+          - net-tools
+
+    - name: check if mirror.centos.org is reachable
+      command: curl -m 1 http://mirror.centos.org
+      ignore_errors: yes
+
+    - name: upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: set hostname
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+- import_playbook: ../openshift-ansible/playbooks/prerequisites.yml
+- import_playbook: ../openshift-ansible/playbooks/openshift-checks/pre-install.yml

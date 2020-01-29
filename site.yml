@@ -1,0 +1,14 @@
+- import_playbook: playbooks/pre.yml
+- import_playbook: openshift-ansible/playbooks/deploy_cluster.yml
+
+#- hosts: all
+#  gather_facts: False
+#  tasks:
+#    - name: Print variables
+#      vars:
+#        msg: |
+#          HOST Variables ("hostvars"):
+#          ---------------------------
+#          {{ hostvars | to_nice_json }}
+#      debug:
+#        msg: "{{ msg.split('\n') }}"
