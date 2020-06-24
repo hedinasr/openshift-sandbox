@@ -1,0 +1,14 @@
+diff --git a/roles/openshift_node_group/templates/node-config.yaml.j2 b/roles/openshift_node_group/templates/node-config.yaml.j2
+index ea3a459a2..fbdfe680e 100644
+--- a/roles/openshift_node_group/templates/node-config.yaml.j2
++++ b/roles/openshift_node_group/templates/node-config.yaml.j2
+@@ -63,6 +63,9 @@ masterKubeConfig: node.kubeconfig
+ networkConfig:
+   mtu: {{ openshift.node.sdn_mtu }}
+   networkPluginName: {{ openshift_node_group_network_plugin }}
++{% if openshift_node_group_configmap | default(false) | bool %}
++  nodeIP: ""
++{% endif %}
+ servingInfo:
+   bindAddress: 0.0.0.0:10250
+   bindNetwork: tcp4

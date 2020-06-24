@@ -2,6 +2,44 @@
   become: True
   gather_facts: False
   tasks:
+    - name: check if mirror.in2p3.fr is reachable
+      command: curl -m 1 http://mirror.in2p3.fr
+      ignore_errors: yes
+      changed_when: false
+
+    - name: create /etc/rhsm/ca directory
+      file:
+        path: /etc/rhsm/ca
+        state: directory
+        mode: '0755'
+
+    - name: create empty redhat-uep.pem
+      file:
+        path: /etc/rhsm/ca/redhat-uep.pem
+        state: touch
+
+    - name: disable fastestmirror plugin
+      lineinfile:
+        path: /etc/yum/pluginconf.d/fastestmirror.conf
+        regexp: '^enable='
+        line: enable=0
+
+    - name: install repositories
+      loop:
+        - name: os
+          url: http://mirror.in2p3.fr/linux/CentOS/7/os/x86_64/
+        - name: extras
+          url: http://mirror.in2p3.fr/linux/CentOS/7/extras/x86_64/
+        - name: epel
+          url: http://mirror.in2p3.fr/pub/epel/7/x86_64/
+      yum_repository:
+        name: "mirror_in2p3_{{ item.name }}"
+        description: "in2p3 {{ item.name }} repository"
+        baseurl: "{{ item.url }}"
+        enabled: true
+        gpgcheck: no
+        sslverify: no
+
     - name: install required packages
       yum:
         name: "{{ packages }}"
@@ -10,10 +48,8 @@
         packages:
           - PyYAML
           - net-tools
-
-    - name: check if mirror.centos.org is reachable
-      command: curl -m 1 http://mirror.centos.org
-      ignore_errors: yes
+          - tmux
+          - htop
 
     - name: upgrade all packages
       yum:

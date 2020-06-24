@@ -4,8 +4,9 @@
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
   config.vm.synced_folder '.', '/vagrant', disabled: true
+  config.vm.network 'forwarded_port', guest: 8443, host: 8443
 
-  config.vm.define "openshift" do |virtualbox|
+  config.vm.define "master" do |virtualbox|
     virtualbox.vm.box = "centos/7"
     virtualbox.vm.network :private_network, ip: "192.168.99.2"
 
@@ -13,7 +14,9 @@ Vagrant.configure("2") do |config|
       v.gui = false
       v.memory = 4096
       v.cpus = 4
-      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.auto_nat_dns_proxy = false
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "off"]
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "off"]
       v.customize ["modifyvm", :id, "--ioapic", "on"]
     end
   end

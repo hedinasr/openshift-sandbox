@@ -5,6 +5,14 @@ openshift_disable_check:
   - disk_availability
   - memory_availability
 
+openshift_cockpit_deployer_image: registry.access.redhat.com/openshift3/registry-console:v3.11
+openshift_master_bootstrap_auto_approve: true
+openshift_additional_repos:
+- id: 'centos-okd-ci'
+  name: 'centos-okd-ci'
+  baseurl: 'https://rpms.svc.ci.openshift.org/openshift-origin-v3.11'
+  gpgcheck: '0'
+  enabled: '1'
 openshift_release: v3.11
 openshift_image_tag: v3.11
 openshift_use_system_containers: False
@@ -14,8 +22,34 @@ openshift_master_cluster_public_hostname: master.192.168.99.2.nip.io
 openshift_master_default_subdomain: app.192.168.99.2.nip.io
 openshift_router_selector: 'node-role.kubernetes.io/infra=true'
 openshift_registry_selector: 'node-role.kubernetes.io/infra=true'
-openshift_enable_service_catalog: False
-template_service_broker_install: False
+openshift_enable_service_catalog: false
+template_service_broker_install: false
 openshift_clock_enabled: true
-openshift_metrics_install_metrics: False
-openshift_logging_install_logging: False
+openshift_cluster_monitoring_operator_install: false
+openshift_metrics_install_metrics: false
+openshift_logging_install_logging: false
+openshift_web_console_install: false
+openshift_console_install: false
+openshift_node_groups:
+  - name: node-config-compute
+    labels:
+      - 'node-role.kubernetes.io/compute=true'
+    edits: []
+  - name: node-config-master
+    labels:
+      - 'node-role.kubernetes.io/master=true'
+    edits: []
+  - name: node-config-infra
+    labels:
+      - 'node-role.kubernetes.io/infra=true'
+    edits: []
+  - name: node-config-master-infra
+    labels:
+      - 'node-role.kubernetes.io/infra=true,node-role.kubernetes.io/master=true'
+    edits: []
+  - name: node-config-all-in-one
+    labels:
+      - 'node-role.kubernetes.io/infra=true,node-role.kubernetes.io/master=true,node-role.kubernetes.io/compute=true'
+    edits:
+      - key: nodeIP
+        value: '192.168.99.2'
